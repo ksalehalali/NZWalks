@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NZWalks.API.CustomActionFilters;
 using NZWalks.API.Data;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
@@ -59,32 +60,35 @@ namespace NZWalks.API.Controllers
 
         //POST to create new region
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> Create([FromBody]AddRegionReqDto addRegionReqDto)
         {
+           
 
-            //use domain model to create region
-          var region = await regionRepository.AddRegionAsync(addRegionReqDto);
+                //use domain model to create region
+                var region = await regionRepository.AddRegionAsync(addRegionReqDto);
 
 
-            //mapping domain model to dto
-            var regionDto = mapper.Map<RegionDto>(region);
-            return CreatedAtAction(nameof(GetById),new {id = regionDto.Id},regionDto);
+                //mapping domain model to dto
+                var regionDto = mapper.Map<RegionDto>(region);
+                return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, regionDto);
+           
         }
 
         //Update region
         [HttpPut]
         [Route("{id:Guid}")]
+        [ValidateModel]
         public async Task<IActionResult> Update([FromRoute]Guid id,[FromBody]UpdateRegionReqDto updateRegionReqDto)
         {
-           
-            var region = await regionRepository.UpdateRegion(id,updateRegionReqDto);
-            if(region == null)
-            {
-                return NotFound();
-            }
+                var region = await regionRepository.UpdateRegion(id, updateRegionReqDto);
+                if (region == null)
+                {
+                    return NotFound();
+                }
 
-            return Ok(region);
-
+                return Ok(region);
+          
 
         }
 
