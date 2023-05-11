@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using NZWalks.API.Data;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
+using System.Data;
 
 namespace NZWalks.API.Controllers
 {
@@ -28,6 +30,8 @@ namespace NZWalks.API.Controllers
 
         //get all
         [HttpGet]
+        [Authorize(Roles = "Reader")]
+
         public async Task<IActionResult> Get()
         {
             var regions = await regionRepository.GetAllRegionsAsync();

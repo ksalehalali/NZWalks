@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NZWalks.API.CustomActionFilters;
@@ -39,6 +40,7 @@ namespace NZWalks.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetAll([FromQuery]string? filterOn, [FromQuery]string? filterQuery,
             [FromQuery]string? sortBy, [FromQuery]bool? isAscending,[FromQuery] int pageNumber =1, [FromQuery]int pageSize = 1000 )
         {
