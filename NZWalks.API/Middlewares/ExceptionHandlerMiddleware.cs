@@ -1,4 +1,6 @@
-﻿namespace NZWalks.API.Middlewares
+﻿using System.Net;
+
+namespace NZWalks.API.Middlewares
 {
     public class ExceptionHandlerMiddleware
     {
@@ -19,8 +21,21 @@
             }
             catch (Exception ex)
             {
+                var errorId = Guid.NewGuid();
+                // log this exception
+                logger.LogError(ex ,$"{errorId} : {ex.Message}");
 
-                throw;
+                //return custom error response
+                httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                httpContext.Response.ContentType = "application/json";
+
+                var error = new
+                {
+                    Id = errorId,
+                    ErrorMessage = "Something went wrong! We ar looking int resolving this."
+                };
+                
+                await httpContext.Response.WriteAsJsonAsync(error);
             }
         }
 

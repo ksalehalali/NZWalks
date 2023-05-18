@@ -13,8 +13,10 @@ using System.Text.Json;
 
 namespace NZWalks.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v{apiVersion}/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     public class RegionsController : ControllerBase
     {
         private readonly NZWalksDBContext _dBContext;
@@ -32,9 +34,9 @@ namespace NZWalks.API.Controllers
 
 
         //get all
+        [MapToApiVersion("1.0")]
         [HttpGet]
        // [Authorize(Roles = "Reader")]
-
         public async Task<IActionResult> Get()
         {
             logger.LogInformation("GetAllRegions action method was invoked");
@@ -47,6 +49,25 @@ namespace NZWalks.API.Controllers
             logger.LogInformation($"Finished GetAllRegions data: {JsonSerializer.Serialize(regions)}");
 
             return Ok(regions);
+        }
+
+        //get all v2
+        [MapToApiVersion("2.0")]
+        [HttpGet]
+        // [Authorize(Roles = "Reader")]
+
+        public async Task<IActionResult> GetV2()
+        {
+            logger.LogInformation("GetAllRegions action method was invoked");
+            var regions = await regionRepository.GetAllRegionsAsync();
+            if (regions == null)
+            {
+
+                return NotFound();
+            }
+            logger.LogInformation($"Finished GetAllRegions data: {JsonSerializer.Serialize(regions)}");
+
+            return Ok(regions[1]);
         }
 
 
